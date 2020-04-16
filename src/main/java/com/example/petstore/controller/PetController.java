@@ -45,8 +45,6 @@ public class PetController implements PetApi {
         }
     }
 
-    //@Autowired
-    //PetService petService;
     @Override
     public ResponseEntity<Pet> addPet(@Valid Pet pet) {
         petsById.put(pet.getId(), pet);
