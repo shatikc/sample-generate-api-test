@@ -127,102 +127,100 @@ x-contracts:
     priority: 1 # priority to run the test
     name: test #test function name
 ```
-2.Let's look over our example, get contain two parts:
+2. Let's look over our example, get contain two parts:
 * Request - can contain query params ,path params and body.
-* Response - contain return status, content
-Request:
-* Query param example:
-  ```
-  parameters:
-    - name: status
-      in: query
-      description: Status values that need to be considered for filter
-      required: false
-      explode: true
-      schema:
-        type: string
-        default: available
-        enum:
-          - available
-          - pending
-          - sold
-      x-contracts:
-        - contractId: 5
-          value: available
-        - contractId: 6
-          value: test
-  ```
-  for each param we neen to add x-contract related to the contractId
-  
-  * Path param example:
-    we need to add to the decleration:
-    ```contractPath: /pet/x```
-    
-  * RequestBody json
-  ```
-  /pet:
-    put:
-      tags:
-        - pet
-      summary: Update an existing pet
-      description: Update an existing pet by Id
-      operationId: updatePet
-      x-contracts:
-        - contractId: 1
-          name: positive update test
-          priority: 1
-          description: positive update
-      requestBody:
-        description: Update an existent pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-        x-contracts:
-          - contractId: 1
-            headers:
-              Content-Type: application/json;charset=UTF-8
-            body:
-              id: 1
-              name: test1
-              category:
-                id: 10
-                name: doggie
-              status: available
-      responses:
-        '200':
-          description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
+    * Query param example:
+      ```
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: false
+          explode: true
+          schema:
+            type: string
+            default: available
+            enum:
+              - available
+              - pending
+              - sold
+          x-contracts:
+            - contractId: 5
+              value: available
+            - contractId: 6
+              value: test
+      ```
+      for each param we neen to add x-contract related to the contractId
+
+      * Path param example:
+        we need to add to the decleration:
+        ```contractPath: /pet/x```
+
+      * RequestBody json
+      ```
+      /pet:
+        put:
+          tags:
+            - pet
+          summary: Update an existing pet
+          description: Update an existing pet by Id
+          operationId: updatePet
           x-contracts:
             - contractId: 1
-              body:
-                id: 1
-                name: test1
-                category:
-                  id: 10
-                  name: doggie
-                status: available
-              headers:
-                Content-Type: application/json;charset=UTF-8
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
-        '405':
-          description: Validation exception
-      security:
-        - petstore_auth:
-            - 'write:pets'
-            - 'read:pets'
-    ```
-Response:
+              name: positive update test
+              priority: 1
+              description: positive update
+          requestBody:
+            description: Update an existent pet in the store
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Pet'
+              application/x-www-form-urlencoded:
+                schema:
+                  $ref: '#/components/schemas/Pet'
+            required: true
+            x-contracts:
+              - contractId: 1
+                headers:
+                  Content-Type: application/json;charset=UTF-8
+                body:
+                  id: 1
+                  name: test1
+                  category:
+                    id: 10
+                    name: doggie
+                  status: available
+          responses:
+            '200':
+              description: Successful operation
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Pet'
+              x-contracts:
+                - contractId: 1
+                  body:
+                    id: 1
+                    name: test1
+                    category:
+                      id: 10
+                      name: doggie
+                    status: available
+                  headers:
+                    Content-Type: application/json;charset=UTF-8
+            '400':
+              description: Invalid ID supplied
+            '404':
+              description: Pet not found
+            '405':
+              description: Validation exception
+          security:
+            - petstore_auth:
+                - 'write:pets'
+                - 'read:pets'
+        ```
+* Response - contain return status, content
 We have multiple responses for one service so for each code we can expect different result.
 In this example:
 ```
@@ -253,7 +251,7 @@ In this example:
 ```
 we expection the code to be 200 with json in the body.
 
-3. Done configurating the yml we need to clean and install, it will generate tests in target like:
+3. Clean and install, it will generate tests in target like:
 ```
 
 public class ContractVerifierTest extends ContractBaseTest {
