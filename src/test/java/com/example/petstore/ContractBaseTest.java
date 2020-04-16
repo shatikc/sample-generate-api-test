@@ -1,7 +1,10 @@
-package com.example;
+package com.example.petstore;
 
-import com.example.controller.FraudCheckController;
+import com.example.petstore.controller.PetController;
+import io.restassured.module.mockmvc.RestAssuredMockMvc;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,16 +12,16 @@ import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureM
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
+import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@DirtiesContext
-@AutoConfigureMessageVerifier
-public class BaseTestClass {
-    @Autowired
-    FraudCheckController fraudCheckController;
+public abstract class ContractBaseTest {
+@Autowired
+    WebApplicationContext webApplicationContext;
     @Before
     public void setup() {
-        MockMvcBuilders.standaloneSetup(this.fraudCheckController);
+        RestAssuredMockMvc.standaloneSetup(MockMvcBuilders.webAppContextSetup(webApplicationContext));
     }
 }

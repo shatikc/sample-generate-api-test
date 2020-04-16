@@ -1,183 +1,190 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.openapitools</groupId>
-	<artifactId>springboot</artifactId>
-	<packaging>jar</packaging>
-	<name>springboot</name>
-	<version>1.0.0-SNAPSHOT</version>
-	<properties>
-		<java.version>11</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<springfox-version>2.8.0</springfox-version>
-	</properties>
+
+	<groupId>com.example</groupId>
+	<artifactId>sample-provider</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.3.RELEASE</version>
+		<version>2.2.6.RELEASE</version>
 	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+
+		<!--        configure openapi structure  -->
+		<basePackage>${project.groupId}</basePackage>
+
+		<!--        insert here the swagger yaml file name -->
+		<serverName>petstore</serverName>
+
+		<serverOutPutDir>${project.build.directory}/openapi-server/${serverName}</serverOutPutDir>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+
+
+		<!--     dependency for openapi-maven-plugin   -->
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>openapi-generator-maven-plugin</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.9.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-contract-verifier</artifactId>
+			<version>2.2.1.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.xml.bind</groupId>
+			<artifactId>jakarta.xml.bind-api</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-compat-spec-parser</artifactId>
+			<version>1.0.45</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger.core.v3</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>2.0.8</version>
+		</dependency>
+		<!--     end of missing required dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-xml</artifactId>
+			<version>2.4.16</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+
+		</dependency>
+	</dependencies>
+
 	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
+		<pluginManagement>
+			<plugins>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.7.0</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<!-- RELEASE_VERSION -->
-				<version>4.2.3</version>
-				<!-- /RELEASE_VERSION -->
+				<version>4.2.0</version>
 				<executions>
 					<execution>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/test/resources/contracts/contract.yml</inputSpec>
+							<!-- configure to generate server side -->
 							<generatorName>spring</generatorName>
-							<generateApis>true</generateApis>
-							<generateApiTests>true</generateApiTests>
+							<!-- Location of the OpenAPI spec, as URL or file.  -->
+							<inputSpec>${project.basedir}/src/test/resources/contracts/${serverName}.yml</inputSpec>
+							<apiPackage>${basePackage}.${serverName}.api</apiPackage>
+							<modelPackage>${basePackage}.${serverName}.model</modelPackage>
+							<templateDirectory>${project.basedir}/template</templateDirectory>
 							<configOptions>
-								<interfaceOnly>true</interfaceOnly>
 								<sourceFolder>src/main/java</sourceFolder>
+								<dateLibrary>java.time</dateLibrary>
+								<withXml>true</withXml>
+								<skipDefaultInterface>true</skipDefaultInterface>
+								<fullJavaUtil>true</fullJavaUtil>
+								<interfaceOnly>true</interfaceOnly>
+								<performBeanValidation>true</performBeanValidation>
+								<allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
 							</configOptions>
+
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.codehaus.mojo</groupId>-->
-<!--				<artifactId>build-helper-maven-plugin</artifactId>-->
-<!--				<version>3.0.0</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<phase>generate-sources</phase>-->
-<!--						<goals>-->
-<!--							<goal>add-source</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<sources>-->
-<!--								<source>${project.build.directory}/generated-sources/swagger/src/main/java</source>-->
-<!--							</sources>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
-<!--			<plugin>-->
-<!--				<groupId>org.springdoc</groupId>-->
-<!--				<artifactId>springdoc-openapi-maven-plugin</artifactId>-->
-<!--				<version>0.2</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<phase>integration-test</phase>-->
-<!--						<goals>-->
-<!--							<goal>generate</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+
 			<plugin>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-contract-maven-plugin</artifactId>
-				<version>2.2.1.RELEASE</version>
+				<version>2.1.1.RELEASE</version>
 				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<goals>
-							<goal>generateTests</goal>
-						</goals>
-						<configuration>
-							<baseClassForTests>com.example.BaseTestClass</baseClassForTests>
-							<generatedTestSourcesDir>true</generatedTestSourcesDir>
-							<contractsPath>${project.basedir}/src/test/resources/contracts</contractsPath>
-							<packageWithBaseClasses>com.example</packageWithBaseClasses>
-						</configuration>
-					</execution>
-				</executions>
 				<configuration>
-					<baseClassForTests>com.example.BaseTestClass</baseClassForTests>
-					<baseClassMappings>
-						<baseClassMapping>
-							<contractPackageRegex>.*com.*</contractPackageRegex>
-							<baseClassFQN>com.example.BaseTestClass</baseClassFQN>
-						</baseClassMapping>
-					</baseClassMappings>
-				</configuration>
+					<baseClassForTests>com.example.petstore.ContractBaseTest</baseClassForTests>
+					 </configuration>
 				<dependencies>
 					<!--needed to include oa3 converter-->
 					<dependency>
 						<groupId>guru.springframework</groupId>
 						<artifactId>spring-cloud-contract-oa3</artifactId>
-						<version>2.1.2.0</version>
+						<version>2.1.1.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-wiremock</artifactId>
-			<version>2.1.1.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-contract-stub-runner</artifactId>
-			<version>2.1.1.RELEASE</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.2.32</version>
-		</dependency>
-		<!--SpringFox dependencies -->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${springfox-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${springfox-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.2.10</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-verifier</artifactId>
-			<scope>test</scope>
-			<version>2.2.1.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
-			<scope>test</scope>
-			<version>2.2.1.RELEASE</version>
-		</dependency>
-	</dependencies>
 </project>
